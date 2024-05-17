@@ -1,0 +1,36 @@
+do_visualize: True
+num_images_to_vis: 100
+
+Dataset:
+  num_folds: 2
+  dataset_path: /workspace/datasets/test
+
+  names:
+    0: car
+    1: bus
+    2: truck
+    3: moto
+    4: plate
+    5: driver
+    6: passanger
+    7: pedestrian
+    8: light
+    9: traffic_light
+
+Training:
+  model: yolov8n
+  data: /workspace/data
+  batch: 32
+  imgsz: 256
+  cache: False
+  workers: 8
+  epochs: 1
+
+Inference:
+  conf_thres: 0.1
+  iou_thres: 0.5
+
+Export:
+  format: onnx
+
+

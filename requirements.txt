@@ -1,0 +1,4 @@
+ultralytics==8.2.16
+onnxruntime==1.17.3
+cleanlab==2.6.4
+pyyaml

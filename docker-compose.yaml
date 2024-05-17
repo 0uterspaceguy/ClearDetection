@@ -1,0 +1,16 @@
+version: '1.0'
+services:
+  entrypoint:
+    build: .
+    container_name: clear_detection
+    runtime: nvidia
+    shm_size: 32gb
+    volumes:
+      - ./datasets/:/workspace/datasets
+      - ./configs/config.yaml:/workspace/configs/config.yaml
+      - ./drawed/:/workspace/drawed
+      - ./results/:/workspace/results
+
+    image: clear_detection
+
+
