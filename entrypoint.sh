@@ -10,5 +10,4 @@ python predict.py -c configs/config.yaml
 echo Analyze...
 python analyze.py -c configs/config.yaml
 
-rm -R runs data/* datasets/*/fold*  datasets/*/*.pickle
 

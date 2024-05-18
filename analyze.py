@@ -4,7 +4,6 @@ import argparse
 from utils import parse_config
 import matplotlib
 import json
-from tqdm import tqdm
 
 from cleanlab.object_detection.filter import find_label_issues
 from cleanlab.object_detection.rank import (
@@ -28,10 +27,10 @@ def main(config_path):
 
     images_path = os.path.join(dataset_path, 'images')
 
-    with open(os.path.join(dataset_path, 'labels.pickle'), 'rb') as handle:
+    with open(os.path.join('/workspace/results', 'labels.pickle'), 'rb') as handle:
         labels = pickle.load(handle)
 
-    with open(os.path.join(dataset_path, 'predictions.pickle'), 'rb') as handle:
+    with open(os.path.join('/workspace/results', 'predictions.pickle'), 'rb') as handle:
         predictions = pickle.load(handle)
 
     label_issue_idx = find_label_issues(labels, predictions, return_indices_ranked_by_score=True)
@@ -56,7 +55,7 @@ def main(config_path):
 
 
     if config['do_visualize']:
-        for issue_to_visualize in tqdm(label_issue_idx[:config['num_images_to_vis']], desc="Visualizing"):
+        for issue_to_visualize in label_issue_idx[:config['num_images_to_vis']]:
 
             label = labels[issue_to_visualize]
             prediction = predictions[issue_to_visualize]

@@ -2,7 +2,6 @@ import os
 import cv2
 from copy import deepcopy
 from detector import Detector
-from tqdm import tqdm
 import numpy as np
 import pickle
 import argparse
@@ -34,7 +33,7 @@ def main(config_path):
 
         num_classes = len(config["Dataset"]["names"])
 
-        for image_name in tqdm(os.listdir(images_path), desc="Make labels and predictions"):
+        for image_name in os.listdir(images_path):
             image_path = os.path.join(images_path, image_name)
 
             orig_image = cv2.imread(image_path)
@@ -99,10 +98,10 @@ def main(config_path):
             prediction_template = prediction_template if len(prediction_template) else np.empty((num_classes,0,5))
             predictions.append(prediction_template)
 
-    with open(os.path.join(config['Dataset']['dataset_path'], 'labels.pickle'), 'wb') as handle:
+    with open(os.path.join('/workspace/results', 'labels.pickle'), 'wb') as handle:
         pickle.dump(labels, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
-    with open(os.path.join(config['Dataset']['dataset_path'], 'predictions.pickle'), 'wb') as handle:
+    with open(os.path.join('/workspace/results', 'predictions.pickle'), 'wb') as handle:
         pickle.dump(predictions, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
 

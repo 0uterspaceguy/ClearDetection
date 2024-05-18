@@ -4,9 +4,9 @@ services:
     build: .
     container_name: clear_detection
     runtime: nvidia
-    shm_size: 32gb
+    shm_size: 128gb
     volumes:
-      - ./datasets/:/workspace/datasets
+      - /mnt/disk/datasets/mobcomplex/:/workspace/datasets
       - ./configs/config.yaml:/workspace/configs/config.yaml
       - ./drawed/:/workspace/drawed
       - ./results/:/workspace/results

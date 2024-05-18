@@ -27,7 +27,7 @@ def main(config_path):
     kf = KFold(n_splits=num_folds, shuffle=True, random_state=42)
 
     for fold_idx, (train_index, test_index) in enumerate(kf.split(images_names)):
-        fold_dir = os.path.join(dataset_path, f"fold_{fold_idx}")
+        fold_dir = os.path.join("/workspace/folds", f"fold_{fold_idx}")
 
         train_fold_dir = os.path.join(fold_dir, 'train')
         test_fold_dir = os.path.join(fold_dir, 'test')
@@ -62,8 +62,11 @@ def main(config_path):
             src_label_path = os.path.join(labels_path, label_name)
             sym_label_path = os.path.join(train_fold_labels, f"sym_{label_name}")
 
-            os.symlink(src_image_path, sym_image_path)
-            os.symlink(src_label_path, sym_label_path)
+            if os.path.exists(src_image_path):
+                os.symlink(src_image_path, sym_image_path)
+
+            if os.path.exists(src_label_path):
+                os.symlink(src_label_path, sym_label_path)
 
         for test_id in test_index:
             image_name = images_names[test_id]
@@ -75,8 +78,11 @@ def main(config_path):
             src_label_path = os.path.join(labels_path, label_name)
             sym_label_path = os.path.join(test_fold_labels, f"sym_{label_name}")
 
-            os.symlink(src_image_path, sym_image_path)
-            os.symlink(src_label_path, sym_label_path)
+            if os.path.exists(src_image_path):
+                os.symlink(src_image_path, sym_image_path)
+
+            if os.path.exists(src_label_path):
+                os.symlink(src_label_path, sym_label_path)
 
         
         yolo_data = {
