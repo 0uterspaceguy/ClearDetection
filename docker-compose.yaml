@@ -1,4 +1,4 @@
-version: '1.0'
+version: '3.0'
 services:
   entrypoint:
     build: .
@@ -6,7 +6,7 @@ services:
     runtime: nvidia
     shm_size: 128gb
     volumes:
-      - ./dataset/test:/workspace/dataset  # датасет в формате yolo
+      - /mnt/disk/datasets/mobcomplex/yolo_dataset:/workspace/dataset  # датасет в формате yolo
       - ./configs/config.yaml:/workspace/configs/config.yaml # конфиг
       - ./drawed/:/workspace/drawed # куда будут складываться картинки с отрисовкой
       - ./results/:/workspace/results # где сохранить результаты анализа

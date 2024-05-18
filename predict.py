@@ -80,7 +80,7 @@ def main(config_path):
                     label_template['labels'].append(label_id)
             
             label_template['bboxes'] = np.array(label_template['bboxes']) if len(label_template['bboxes']) else np.empty((0,4))
-            label_template['labels'] = np.array(label_template['labels']) if len(label_template['labels']) else np.empty((0,4))
+            label_template['labels'] = np.array(label_template['labels']) if len(label_template['labels']) else np.empty((0,))
 
             labels.append(deepcopy(label_template))
 

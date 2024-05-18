@@ -10,16 +10,10 @@ Dataset:
   dataset_path: /workspace/dataset/ # path to yolo-format dataset inside docker container
 
   names:
-    0: car
-    1: bus
-    2: truck
-    3: moto
-    4: plate
-    5: driver
-    6: passanger
-    7: pedestrian
-    8: light
-    9: traffic_light
+    0: plate
+    1: sign
+    2: garbage
+
 
 Training:
   model: yolov8n

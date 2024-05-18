@@ -60,10 +60,10 @@ def main(config_path):
             src_label_path = os.path.join(labels_path, label_name)
             sym_label_path = os.path.join(train_fold_labels, f"sym_{label_name}")
 
-            if os.path.exists(src_image_path):
+            if os.path.exists(src_image_path) and (not os.path.lexists(sym_image_path)):
                 os.symlink(src_image_path, sym_image_path)
 
-            if os.path.exists(src_label_path):
+            if os.path.exists(src_label_path) and (not os.path.lexists(sym_label_path)):
                 os.symlink(src_label_path, sym_label_path)
 
         for test_id in test_index:
@@ -76,10 +76,10 @@ def main(config_path):
             src_label_path = os.path.join(labels_path, label_name)
             sym_label_path = os.path.join(test_fold_labels, f"sym_{label_name}")
 
-            if os.path.exists(src_image_path):
+            if os.path.exists(src_image_path) and (not os.path.lexists(sym_image_path)):
                 os.symlink(src_image_path, sym_image_path)
 
-            if os.path.exists(src_label_path):
+            if os.path.exists(src_label_path) and (not os.path.lexists(sym_label_path)):
                 os.symlink(src_label_path, sym_label_path)
 
         
