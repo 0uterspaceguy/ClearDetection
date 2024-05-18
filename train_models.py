@@ -11,7 +11,7 @@ def parse_args():
 
 def main(config_path):
     config = parse_config(config_path)
-    data_path = config['Training']['data']
+    data_path = "/workspace/data"
 
     for fold_idx in range(config['Dataset']['num_folds']):
         config = parse_config(config_path)
@@ -22,10 +22,6 @@ def main(config_path):
 
         config['Training']['data'] = os.path.join(data_path, f"data_fold_{fold_idx}.yaml")
         results = model.train(name=f"fold_{fold_idx}", **config['Training'])
-
-        # results = model.val()
-        
-        success = model.export(format='onnx')
 
 if __name__ == "__main__":
     args = parse_args()

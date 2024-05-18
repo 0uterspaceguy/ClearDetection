@@ -11,7 +11,6 @@ def parse_args():
     args = parser.parse_args()
     return args
 
-
 def main(config_path):
     config = parse_config(config_path)
 
@@ -39,7 +38,6 @@ def main(config_path):
         test_fold_labels = os.path.join(test_fold_dir, 'labels')
 
         rmdir(fold_dir)
-
         mkdir(fold_dir)
 
         mkdir(train_fold_dir)
@@ -93,7 +91,7 @@ def main(config_path):
             'names': config['Dataset']['names']
         }
 
-        with open(os.path.join(config['Training']['data'], f"data_fold_{fold_idx}.yaml"), 'w') as file:
+        with open(os.path.join("/workspace/data", f"data_fold_{fold_idx}.yaml"), 'w') as file:
             yaml.dump(yolo_data, file)
 
 

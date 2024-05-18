@@ -6,10 +6,10 @@ services:
     runtime: nvidia
     shm_size: 128gb
     volumes:
-      - /mnt/disk/datasets/mobcomplex/:/workspace/datasets
-      - ./configs/config.yaml:/workspace/configs/config.yaml
-      - ./drawed/:/workspace/drawed
-      - ./results/:/workspace/results
+      - ./dataset/test:/workspace/dataset  # датасет в формате yolo
+      - ./configs/config.yaml:/workspace/configs/config.yaml # конфиг
+      - ./drawed/:/workspace/drawed # куда будут складываться картинки с отрисовкой
+      - ./results/:/workspace/results # где сохранить результаты анализа
 
     image: clear_detection
 

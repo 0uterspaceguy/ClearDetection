@@ -1,11 +1,11 @@
 import os
 import cv2
 from copy import deepcopy
-from detector import Detector
+from ultralytics import YOLO
 import numpy as np
 import pickle
 import argparse
-from utils import parse_config
+from utils import parse_config, mkdir
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Make predictions')
@@ -19,14 +19,15 @@ def main(config_path):
     labels = []
     predictions = []
 
-    for fold_idx in range(config['Dataset']['num_folds']):
-        model_path = os.path.join("runs", "detect", f"fold_{fold_idx}", "weights", "best.onnx")
+    if config["Correction"]["correct_issue_labels"]:
+        mkdir("/workspace/yolo_labels")
 
-        model = Detector(model_path,
-                        conf_thres=config['Inference']['conf_thres'], 
-                        iou_thres=config['Inference']['iou_thres'])
+    for fold_idx in range(config['Dataset']['num_folds']):
+        model_path = os.path.join("runs", "detect", f"fold_{fold_idx}", "weights", "best.pt")
+        
+        model = YOLO(model_path)
             
-        dataset_path = os.path.join(config['Dataset']['dataset_path'], f"fold_{fold_idx}")
+        dataset_path = os.path.join("/workspace/folds", f"fold_{fold_idx}")
 
         images_path = os.path.join(dataset_path, 'test', 'images')
         labels_path = os.path.join(dataset_path, 'test', 'labels')
@@ -85,10 +86,32 @@ def main(config_path):
 
             prediction_template = [[] for _ in range(num_classes)]
 
-            boxes, scores, class_ids = model(orig_image)
+            result = model.predict(orig_image, 
+                        imgsz=config['Training']['imgsz'],
+                        conf=config['Inference']['conf_thres'],
+                        iou=config['Inference']['iou_thres'])[0]
+            
+            if config["Correction"]["correct_issue_labels"]:
+                lines = []
+                for box, score, class_id in zip(result.boxes.xywhn, result.boxes.conf, result.boxes.cls):
+                    box = box.detach().cpu()
+                    score = score.detach().cpu().item()
+                    class_id = class_id.detach().cpu().item()
+                    xn, yn, wn, hn = box
 
-            for box, score, class_id in zip(boxes, scores, class_ids):
-                prediction_template[class_id].append(list(box) + [score])
+                    if score >= config["Correction"]["conf_thres"]:
+                        line = f"{int(class_id)} {xn} {yn} {wn} {hn}\n"
+                        lines.append(line)
+
+                with open(os.path.join("/workspace", "yolo_labels", label_name.replace('sym_', '')), "w", encoding='utf-8') as label_file:
+                    label_file.writelines(lines)
+
+            for box, score, class_id in zip(result.boxes.xyxy, result.boxes.conf, result.boxes.cls):
+                box = box.detach().cpu()
+                score = score.detach().cpu().item()
+                class_id = class_id.detach().cpu().item()
+
+                prediction_template[int(class_id)].append(list(box) + [score])
             
             for class_id in range(num_classes):
                 prediction_template[class_id] = np.array(prediction_template[class_id], dtype=np.float32)if len(prediction_template[class_id]) else np.empty((0, 5), dtype=np.float32)
@@ -98,10 +121,10 @@ def main(config_path):
             prediction_template = prediction_template if len(prediction_template) else np.empty((num_classes,0,5))
             predictions.append(prediction_template)
 
-    with open(os.path.join('/workspace/results', 'labels.pickle'), 'wb') as handle:
+    with open(os.path.join('/workspace', 'results', 'labels.pickle'), 'wb') as handle:
         pickle.dump(labels, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
-    with open(os.path.join('/workspace/results', 'predictions.pickle'), 'wb') as handle:
+    with open(os.path.join('/workspace', 'results', 'predictions.pickle'), 'wb') as handle:
         pickle.dump(predictions, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
 

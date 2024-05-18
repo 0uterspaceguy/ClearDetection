@@ -1,8 +1,10 @@
 __pycache__
 utils/__pycache__
 
-datasets/
-!.gitkeep
+dataset/
 
 drawed/
+!.gitkeep
+
+results/
 !.gitkeep

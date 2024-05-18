@@ -1,9 +1,10 @@
 import os 
 import pickle
 import argparse
-from utils import parse_config
+from utils import parse_config, mkdir, rmdir
 import matplotlib
 import json
+from shutil import copyfile as cp
 
 from cleanlab.object_detection.filter import find_label_issues
 from cleanlab.object_detection.rank import (
@@ -34,24 +35,37 @@ def main(config_path):
         predictions = pickle.load(handle)
 
     label_issue_idx = find_label_issues(labels, predictions, return_indices_ranked_by_score=True)
-    print("Num issue samples:", len(label_issue_idx))
 
-    # scores = get_label_quality_scores(labels, predictions)
-    # print(scores)
+    issue_images_result = []
+    issue_images_set = set([labels[issue_to_visualize]['image_name'].replace('sym_', '') for issue_to_visualize in label_issue_idx])
 
-    # issue_idx = issues_from_scores(scores, threshold=0.1)  # lower threshold will return fewer (but more confident) label issues
-    # print(issue_idx)
+    if config["Correction"]["correct_issue_labels"]:
+        corrected_path = os.path.join(config['Dataset']['dataset_path'], 'corrected_labels')
+        src_images_path = os.path.join(config['Dataset']['dataset_path'], 'images')
+        src_labels_path = os.path.join(config['Dataset']['dataset_path'], 'labels')
 
-    issue_images = []
+        rmdir(corrected_path)
+        mkdir(corrected_path)
 
+        for image_name in os.listdir(src_images_path):
+            label_name = os.path.splitext(image_name)[0] + ".txt"
+            dst_label_path = os.path.join(corrected_path, label_name)
+
+            if image_name in issue_images_set:
+                src_label_path = os.path.join("./yolo_labels", label_name)
+            else:
+                src_label_path = os.path.join(src_labels_path, label_name)
+
+            cp(src_label_path, dst_label_path)
+    
     for issue_to_visualize in label_issue_idx:
         label = labels[issue_to_visualize]
         image_name = label['image_name'].replace('sym_', '')
 
-        issue_images.append({"image_name": image_name})
+        issue_images_result.append({"image_name": image_name})
 
     with open('./results/result.json', 'w', encoding='utf-8') as result_file:
-        json.dump(issue_images, result_file)
+        json.dump(issue_images_result, result_file)
 
 
     if config['do_visualize']:

@@ -1,9 +1,13 @@
-do_visualize: True
-num_images_to_vis: 100
+do_visualize: True  # whether to do visualization
+num_images_to_vis: 100 # number of images to visualize
+
+Correction: 
+  correct_issue_labels: True
+  conf_thres: 0.2
 
 Dataset:
-  num_folds: 2
-  dataset_path: /workspace/datasets/test
+  num_folds: 2  # number of folds to split dataset
+  dataset_path: /workspace/dataset/ # path to yolo-format dataset inside docker container
 
   names:
     0: car
@@ -19,7 +23,6 @@ Dataset:
 
 Training:
   model: yolov8n
-  data: /workspace/data
   batch: 32
   imgsz: 256
   cache: False
