@@ -89,7 +89,8 @@ def main(config_path):
             result = model.predict(orig_image, 
                         imgsz=config['Training']['imgsz'],
                         conf=config['Inference']['conf_thres'],
-                        iou=config['Inference']['iou_thres'])[0]
+                        iou=config['Inference']['iou_thres'],
+                        verbose=False)[0]
             
             if config["Correction"]["correct_issue_labels"]:
                 lines = []

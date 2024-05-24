@@ -7,7 +7,7 @@ import yaml
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Split dataset into folds')
-    parser.add_argument('-c', '--config', required=True, help='./configs/config.yaml')
+    parser.add_argument('-c', '--config', required=True, help='/workspace/configs/config.yaml')
     args = parser.parse_args()
     return args
 
@@ -26,7 +26,7 @@ def main(config_path):
     kf = KFold(n_splits=num_folds, shuffle=True, random_state=42)
 
     for fold_idx, (train_index, test_index) in enumerate(kf.split(images_names)):
-        fold_dir = os.path.join("/workspace/folds", f"fold_{fold_idx}")
+        fold_dir = os.path.join("/workspace", "folds", f"fold_{fold_idx}")
 
         train_fold_dir = os.path.join(fold_dir, 'train')
         test_fold_dir = os.path.join(fold_dir, 'test')
@@ -36,6 +36,8 @@ def main(config_path):
 
         train_fold_labels = os.path.join(train_fold_dir, 'labels')
         test_fold_labels = os.path.join(test_fold_dir, 'labels')
+
+        data_files_path = os.path.join("/workspace", "data")
 
         rmdir(fold_dir)
         mkdir(fold_dir)
@@ -49,6 +51,7 @@ def main(config_path):
         mkdir(train_fold_labels)
         mkdir(test_fold_labels)
 
+        mkdir(data_files_path)
 
         for train_id in train_index:
             image_name = images_names[train_id]
@@ -85,13 +88,13 @@ def main(config_path):
         
         yolo_data = {
             'path': fold_dir,
-            'train': "train/images", 
-            'val': "test/images",  
-            'test':  "test/images",
+            'train': os.path.join("train", "images"), 
+            'val': os.path.join("test", "images"),  
+            'test':  os.path.join("test", "images"),
             'names': config['Dataset']['names']
         }
 
-        with open(os.path.join("/workspace/data", f"data_fold_{fold_idx}.yaml"), 'w') as file:
+        with open(os.path.join(data_files_path, f"data_fold_{fold_idx}.yaml"), 'w') as file:
             yaml.dump(yolo_data, file)
 
 

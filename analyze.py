@@ -64,7 +64,7 @@ def main(config_path):
 
         issue_images_result.append({"image_name": image_name})
 
-    with open('./results/result.json', 'w', encoding='utf-8') as result_file:
+    with open('/workspace/results/result.json', 'w', encoding='utf-8') as result_file:
         json.dump(issue_images_result, result_file)
 
 

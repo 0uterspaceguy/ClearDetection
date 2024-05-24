@@ -2,32 +2,30 @@ do_visualize: True  # whether to do visualization
 num_images_to_vis: 100 # number of images to visualize
 
 Correction: 
-  correct_issue_labels: True
-  conf_thres: 0.2
+  correct_issue_labels: True # whether to do isue labels correction
+  conf_thres: 0.2 # threshold while correction
 
 Dataset:
-  num_folds: 2  # number of folds to split dataset
+  num_folds: 5  # number of folds to split dataset
   dataset_path: /workspace/dataset/ # path to yolo-format dataset inside docker container
 
-  names:
+  names: # class names for vizualization
     0: plate
     1: sign
     2: garbage
 
 
 Training:
-  model: yolov8n
-  batch: 32
-  imgsz: 256
-  cache: False
-  workers: 8
-  epochs: 1
+  model: yolov8n  # type of yolo model 
+  batch: 32 # batch size for training
+  imgsz: 1024 # input image size
+  cache: False # whether to cache dataset in ram
+  workers: 8 # number of workers for dataloaders
+  epochs: 30 # number of training epochs
 
 Inference:
-  conf_thres: 0.1
-  iou_thres: 0.5
+  conf_thres: 0.1 # confidence threshold for predictions
+  iou_thres: 0.5 # iou confidence for predictions
 
-Export:
-  format: onnx
 
 
