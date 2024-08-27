@@ -4,9 +4,9 @@ services:
     build: .
     container_name: clear_detection
     runtime: nvidia
-    shm_size: 128gb
+    shm_size: 64gb
     volumes:
-      - ./dataset/test:/workspace/dataset  # dataset in yolo format
+      - /home/outerspaceguy/Desktop/PPs/lct_dataset_2024/big_dataset/:/workspace/dataset  # dataset in yolo format
       - ./configs/config.yaml:/workspace/configs/config.yaml # config
       - ./drawed/:/workspace/drawed # path to save result examples
       - ./results/:/workspace/results # path to results
